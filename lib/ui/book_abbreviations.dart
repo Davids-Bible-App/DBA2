@@ -1,0 +1,62 @@
+const Map<String, String> kBookAbbr = {
+  'Genesis': 'Gen',
+  'Exodus': 'Exod',
+  'Leviticus': 'Lev',
+  'Numbers': 'Num',
+  'Deuteronomy': 'Deut',
+  'Joshua': 'Josh',
+  'Judges': 'Judg',
+  '1 Samuel': '1 Sam',
+  '2 Samuel': '2 Sam',
+  '1 Kings': '1 Kgs',
+  '2 Kings': '2 Kgs',
+  '1 Chronicles': '1 Chr',
+  '2 Chronicles': '2 Chr',
+  'Nehemiah': 'Neh',
+  'Esther': 'Esth',
+  'Psalms': 'Ps',
+  'Proverbs': 'Prov',
+  'Ecclesiastes': 'Eccl',
+  'Song of Solomon': 'Song',
+  'Song of Songs': 'Song',
+  'Isaiah': 'Isa',
+  'Jeremiah': 'Jer',
+  'Lamentations': 'Lam',
+  'Ezekiel': 'Ezek',
+  'Daniel': 'Dan',
+  'Obadiah': 'Obad',
+  'Habakkuk': 'Hab',
+  'Zephaniah': 'Zeph',
+  'Zechariah': 'Zech',
+  'Malachi': 'Mal',
+  'Matthew': 'Matt',
+  'Romans': 'Rom',
+  '1 Corinthians': '1 Cor',
+  '2 Corinthians': '2 Cor',
+  'Galatians': 'Gal',
+  'Ephesians': 'Eph',
+  'Philippians': 'Phil',
+  'Colossians': 'Col',
+  '1 Thessalonians': '1 Thess',
+  '2 Thessalonians': '2 Thess',
+  '1 Timothy': '1 Tim',
+  '2 Timothy': '2 Tim',
+  'Philemon': 'Phlm',
+  'Hebrews': 'Heb',
+  '1 Peter': '1 Pet',
+  '2 Peter': '2 Pet',
+  'Revelation': 'Rev',
+  // Deuterocanon, if your translations include it
+  'Wisdom of Solomon': 'Wis',
+  'Ecclesiasticus': 'Sir',
+  '1 Maccabees': '1 Macc',
+  '2 Maccabees': '2 Macc',
+};
+
+/// "1 Thessalonians 5" -> "1 Thess 5". Unknown names are returned unchanged.
+String abbreviateTitle(String title) {
+  final i = title.lastIndexOf(' ');
+  if (i < 0) return title;
+  final abbr = kBookAbbr[title.substring(0, i)];
+  return abbr == null ? title : '$abbr ${title.substring(i + 1)}';
+}
