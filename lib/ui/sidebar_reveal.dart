@@ -1,5 +1,6 @@
 // lib/ui/sidebar_reveal.dart
 import 'package:dba2/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:dba2/state/overlay_lock.dart';
 
@@ -178,119 +179,122 @@ class SidebarRevealState extends State<SidebarReveal>
 
   Widget _buildLayers(BuildContext context, BoxConstraints constraints) {
     _openWidth = constraints.maxWidth * widget.openFraction;
+    final isWindows = defaultTargetPlatform == TargetPlatform.windows;
+    return ColoredBox(
+      color: isWindows ? Colors.black : Colors.transparent,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          final p = _controller.value; // 0..1
+          final dir = _dir(_side);
+          final appOffset = p * _openWidth * dir;
+          final isOpen = p > 0.01;
 
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        final p = _controller.value; // 0..1
-        final dir = _dir(_side);
-        final appOffset = p * _openWidth * dir;
-        final isOpen = p > 0.01;
+          // Parallax: sidebars travel at sidebarSpeedFactor of the app's speed
+          // and end flush at 0 when fully open.
+          final slack = (1 - p) * _openWidth * widget.sidebarSpeedFactor;
+          final leftOffset = -slack;
+          final rightOffset = slack;
 
-        // Parallax: sidebars travel at sidebarSpeedFactor of the app's speed
-        // and end flush at 0 when fully open.
-        final slack = (1 - p) * _openWidth * widget.sidebarSpeedFactor;
-        final leftOffset = -slack;
-        final rightOffset = slack;
+          final sidebarOpacity = widget.fadeIn
+              ? (widget.fadeStartOpacity +
+                        (widget.fadeEndOpacity - widget.fadeStartOpacity) * p)
+                    .clamp(0.0, 1.0)
+              : 1.0;
 
-        final sidebarOpacity = widget.fadeIn
-            ? (widget.fadeStartOpacity +
-                      (widget.fadeEndOpacity - widget.fadeStartOpacity) * p)
-                  .clamp(0.0, 1.0)
-            : 1.0;
+          final showLeft = _side == SidebarSide.left && p > 0;
+          final showRight = _side == SidebarSide.right && p > 0;
 
-        final showLeft = _side == SidebarSide.left && p > 0;
-        final showRight = _side == SidebarSide.right && p > 0;
-
-        return Stack(
-          children: [
-            if (widget.leftSidebar != null)
-              Positioned(
-                key: const ValueKey('left-sidebar'),
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: _openWidth, // only the revealed area
-                child: TickerMode(
-                  enabled: showLeft,
+          return Stack(
+            children: [
+              if (widget.leftSidebar != null)
+                Positioned(
+                  key: const ValueKey('left-sidebar'),
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: _openWidth, // only the revealed area
+                  child: TickerMode(
+                    enabled: showLeft,
+                    child: Offstage(
+                      offstage: !showLeft,
+                      child: Transform.translate(
+                        offset: Offset(leftOffset, 0),
+                        child: Opacity(
+                          opacity: sidebarOpacity,
+                          child: widget.leftSidebar,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (widget.rightSidebar != null)
+                Positioned(
+                  key: const ValueKey('right-sidebar'),
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: _openWidth, // only the revealed area
                   child: Offstage(
-                    offstage: !showLeft,
+                    offstage: !showRight,
                     child: Transform.translate(
-                      offset: Offset(leftOffset, 0),
+                      offset: Offset(rightOffset, 0),
                       child: Opacity(
                         opacity: sidebarOpacity,
-                        child: widget.leftSidebar,
+                        child: widget.rightSidebar,
+                      ),
+                    ),
+                  ),
+                ),
+
+              Transform.translate(
+                offset: Offset(appOffset, 0),
+                child: RepaintBoundary(
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            blurRadius: 16,
+                            spreadRadius: 2,
+                            offset: Offset(-4 * dir, 0),
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: AbsorbPointer(
+                              absorbing: isOpen,
+                              child: widget.child,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              ignoring: !isOpen,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: close,
+                              ),
+                            ),
+                          ),
+                          if (widget.leftSidebar != null)
+                            _edgeStrip(SidebarSide.left),
+                          if (widget.rightSidebar != null)
+                            _edgeStrip(SidebarSide.right),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
-            if (widget.rightSidebar != null)
-              Positioned(
-                key: const ValueKey('right-sidebar'),
-                right: 0,
-                top: 0,
-                bottom: 0,
-                width: _openWidth, // only the revealed area
-                child: Offstage(
-                  offstage: !showRight,
-                  child: Transform.translate(
-                    offset: Offset(rightOffset, 0),
-                    child: Opacity(
-                      opacity: sidebarOpacity,
-                      child: widget.rightSidebar,
-                    ),
-                  ),
-                ),
-              ),
-
-            Transform.translate(
-              offset: Offset(appOffset, 0),
-              child: RepaintBoundary(
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          blurRadius: 16,
-                          spreadRadius: 2,
-                          offset: Offset(-4 * dir, 0),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: AbsorbPointer(
-                            absorbing: isOpen,
-                            child: widget.child,
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: IgnorePointer(
-                            ignoring: !isOpen,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: close,
-                            ),
-                          ),
-                        ),
-                        if (widget.leftSidebar != null)
-                          _edgeStrip(SidebarSide.left),
-                        if (widget.rightSidebar != null)
-                          _edgeStrip(SidebarSide.right),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 

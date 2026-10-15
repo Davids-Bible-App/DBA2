@@ -55,8 +55,8 @@ class MenuBtn extends StatefulWidget {
     this.flipY = false,
     this.rotate, // 1 to 4 quarter turns
     // ---- Buttons ----
-    this.toggleSize = 20, // main (⋯) button
-    this.itemSize = 20, // popped-out buttons
+    this.toggleSize = 25, // main (⋯) button
+    this.itemSize = 25, // popped-out buttons
     this.iconSize = 16,
     this.iconColor, // null = theme onSurface
     this.buttonColor, // null = dark/light default grey
@@ -374,19 +374,35 @@ class _CircleButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: context.colorScheme.secondary,
+          color: dark ? Colors.grey[800] : Colors.grey[200],
+          // color: context.colorScheme.secondary,
           boxShadow: [
+            // darker shadow on bottom right
             BoxShadow(
-              color: Colors.black.withValues(alpha: dark ? 0.5 : 0.15),
-              blurRadius: 6,
-              offset: const Offset(2, 2),
+              color: dark ? Colors.black54 : Colors.grey.shade500,
+              blurRadius: 2,
+              offset: const Offset(1, 1),
+            ),
+            // lighter shadow on top left
+            BoxShadow(
+              color: dark ? Colors.grey.shade700 : Colors.white,
+              blurRadius: 1,
+              offset: Offset((dark ? -1 : -2), -1),
             ),
           ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withValues(alpha: dark ? 0.5 : 0.15),
+          //     blurRadius: 6,
+          //     offset: const Offset(2, 2),
+          //   ),
+          // ],
         ),
         // Forces icon colour/size (overlay can lose the app's IconTheme)
         child: IconTheme(
           data: IconThemeData(
-            color: iconColor ?? context.colorScheme.inversePrimary,
+            color: iconColor ?? (dark ? Colors.grey[400] : Colors.grey[700]),
+            // color: iconColor ?? context.colorScheme.inversePrimary,
             size: iconSize,
           ),
           child: child,

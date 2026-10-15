@@ -19,6 +19,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   flutter::DartProject project(L"data");
 
+  // Turning this off, stops windows app from being laggy
+  // But now Graphics look terrible. FIX: Use Medium: filterQuality: FilterQuality.medium,
+  project.set_impeller_switch(flutter::ImpellerSwitch::Disabled);
+
   std::vector<std::string> command_line_arguments =
       GetCommandLineArguments();
 

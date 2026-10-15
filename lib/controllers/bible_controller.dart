@@ -8,7 +8,7 @@ import 'package:sqlite3/sqlite3.dart' as sqlite3lib;
 
 import '../models/bible_book.dart';
 import '../models/chapter_model.dart';
-import '../models/translation.dart';
+import '../services/translation_catalog.dart';
 import '../services/translation_store.dart';
 import '../ui/verse_selection.dart';
 

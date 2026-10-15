@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 
-import '../models/translation.dart';
+import '../services/translation_catalog.dart';
 import '../services/translation_store.dart';
 
 /// Which translations are on the device, and what is downloading right now.

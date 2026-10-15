@@ -4,7 +4,7 @@ import 'package:dba2/state/reader_audio_link.dart';
 import 'package:dba2/ui/bible_reader_page.dart';
 import 'package:dba2/ui/sidebar_left_navigation.dart';
 import 'package:dba2/ui/sidebar_reveal.dart';
-import 'package:dba2/widgets/settings_page.dart';
+import 'package:dba2/widgets/settings/settings_page.dart';
 
 class DavidsBibleApp2 extends StatefulWidget {
   const DavidsBibleApp2({super.key});

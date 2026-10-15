@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite3lib;
 
-import '../models/translation.dart';
+import 'translation_catalog.dart';
 
 /// Owns the folder the `.dba` files live in, and every way a file can get
 /// there (download / import) or leave (delete / backup).

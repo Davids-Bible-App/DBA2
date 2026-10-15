@@ -62,6 +62,7 @@ Future<T?> showLockedBottomSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
   Color? backgroundColor,
+  double overshootExtent = 48,
 }) async {
   overlayLocks.value++;
   try {
@@ -78,7 +79,7 @@ Future<T?> showLockedBottomSheet<T>({
       ),
       builder: (sheetContext) => Overshoot(
         edge: OvershootEdge.bottom,
-        extent: 48,
+        extent: overshootExtent,
         color: backgroundColor,
         child: builder(sheetContext),
       ),

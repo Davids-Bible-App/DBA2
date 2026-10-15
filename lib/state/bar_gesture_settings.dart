@@ -42,8 +42,7 @@ enum BarAction {
   strongs('Strongs'),
   memes('Memes'),
   mdEditor('MDEditor'),
-  audio('Audio'),
-  refresh('Refresh');
+  translations('Translations');
 
   const BarAction(this.label);
   final String label;

@@ -4,7 +4,7 @@ import 'package:dba2/state/overlay_lock.dart';
 
 import '../controllers/bible_controller.dart';
 import '../controllers/translation_controller.dart';
-import '../models/translation.dart';
+import '../services/translation_catalog.dart';
 
 // ---------------------------------------------------------------------------
 // TOP SHEET (drops down from the app bar)

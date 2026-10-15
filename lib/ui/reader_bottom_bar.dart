@@ -1,5 +1,6 @@
 // lib/ui/reader_bottom_bar.dart
 import 'package:dba2/state/bar_gesture_settings.dart';
+import 'package:dba2/ui/ikon_btn.dart';
 import 'package:dba2/widgets/burn_in_text.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,7 @@ class ReaderBottomBar extends StatelessWidget {
                   padding: const EdgeInsets.only(
                     left: 50.0,
                   ), // Adjust exact distance from left edge
-                  child: MenuBtn(
+                  child: IkonBtn(
                     icon: const Icon(Icons.history),
                     onPressed: () {},
                     tooltip: 'History',

@@ -3,6 +3,8 @@ import 'package:dba2/core.dart';
 import 'package:dba2/state/bar_gesture_settings.dart';
 import 'package:dba2/state/overlay_lock.dart';
 import 'package:dba2/ui/audio_bar.dart';
+import 'package:dba2/ui/translation_sheet.dart';
+import 'package:dba2/widgets/settings/settings_page.dart';
 
 import 'sidebar_reveal.dart';
 import '../controllers/bible_controller.dart';
@@ -28,7 +30,6 @@ class BarActionRunner {
         SidebarReveal.of(context).toggleRight();
       case BarAction.audioPlayer:
         showLockedBottomSheet<void>(
-          backgroundColor: context.colorScheme.secondary,
           context: context,
           builder: (_) => AudioBar(),
         );
@@ -41,17 +42,18 @@ class BarActionRunner {
       case BarAction.history:
         {}
       case BarAction.settings:
-        {}
+        showSettingsSheet(context, controller: controller);
+
       case BarAction.strongs:
         {}
       case BarAction.memes:
         {}
       case BarAction.mdEditor:
         {}
-      case BarAction.audio:
-        {}
-      case BarAction.refresh:
-        {}
+      case BarAction.translations:
+        {
+          openTranslationSheet(context);
+        }
     }
   }
 }

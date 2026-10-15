@@ -52,7 +52,16 @@ class _AddAudioSheetState extends State<_AddAudioSheet> {
     });
     String? msg;
     try {
-      final ok = await widget.c.exportAuthor(author);
+      final ok = await widget.c.exportAuthor(
+        author,
+        onPhase: (phase, pct) {
+          if (!mounted) return;
+          setState(() {
+            _phase = phase;
+            _pct = pct;
+          });
+        },
+      );
       msg = ok ? 'Saved "$author" zip' : null; // null = cancelled
     } catch (e, st) {
       debugPrint('Save failed: $e\n$st');
@@ -199,7 +208,13 @@ class _AddAudioSheetState extends State<_AddAudioSheet> {
             child: CircularProgressIndicator(
               strokeWidth: 3,
               color: _green,
-              value: _phase != 'zip' && _pct > 0 ? _pct / 100 : null,
+              value:
+                  (_phase == 'download' ||
+                          _phase == 'extract' ||
+                          _phase == 'write') &&
+                      _pct > 0
+                  ? _pct / 100
+                  : null,
             ),
           ),
           IconButton(
@@ -236,6 +251,8 @@ class _AddAudioSheetState extends State<_AddAudioSheet> {
         ? switch (_phase) {
             'download' => 'Downloading… ${_pct.round()}%',
             'extract' => 'Extracting… ${_pct.round()}%',
+            'save' => 'Choose where to save…',
+            'write' => 'Writing to disk… ${_pct.round()}%',
             _ => 'Preparing zip…',
           }
         : installedAs != null

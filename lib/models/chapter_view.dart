@@ -563,7 +563,7 @@ class _ParagraphBlockState extends State<_ParagraphBlock> {
                   child: Image.asset(
                     kLeafAsset,
                     width: lineH * kLeafScale,
-                    filterQuality: FilterQuality.high,
+                    filterQuality: FilterQuality.medium,
                   ),
                 ),
               ),

@@ -17,6 +17,9 @@
 // play, seek, chapter change, loop restart.
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:filegate/filegate.dart';
 
 import '../services/audio_catalog.dart';
 
@@ -25,7 +28,6 @@ import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 
 import '../services/audio_library.dart';
 
@@ -162,16 +164,57 @@ class AudioController extends ChangeNotifier {
   /// Rezips [author] and lets the user pick where to save it
   /// (same save-as picker you use for the reader Bibles).
   /// Returns true only if the file was really saved.
-  Future<bool> exportAuthor(String author) async {
+  // Future<bool> exportAuthor(String author) async {
+  //   final zip = await library.buildAuthorZip(author);
+  //   try {
+  //     final saved = await FlutterFileDialog.saveFile(
+  //       params: SaveFileDialogParams(
+  //         sourceFilePath: zip.path, // copied natively, never loaded into memory
+  //         fileName: '${author.replaceAll(RegExp(r'[^\w\- ]'), '_')}.zip',
+  //       ),
+  //     );
+  //     return saved != null; // null = cancelled
+  //   } finally {
+  //     if (zip.existsSync()) await zip.delete();
+  //   }
+  // }
+
+  /// phase: 'zip' -> 'save' (dialog open) -> 'write' (pct 0..100).
+  Future<bool> exportAuthor(
+    String author, {
+    void Function(String phase, double pct)? onPhase,
+  }) async {
+    onPhase?.call('zip', 0);
     final zip = await library.buildAuthorZip(author);
     try {
-      final saved = await FlutterFileDialog.saveFile(
-        params: SaveFileDialogParams(
-          sourceFilePath: zip.path, // copied natively, never loaded into memory
-          fileName: '${author.replaceAll(RegExp(r'[^\w\- ]'), '_')}.zip',
-        ),
+      const fg = Filegate();
+
+      onPhase?.call('save', 0);
+      final saved = await fg.saveFile(
+        Uint8List(0),
+        suggestedName: '${author.replaceAll(RegExp(r'[^\w\- ]'), '_')}.zip',
+        allowedExtensions: ['zip'],
+        mimeType: 'application/zip',
       );
-      return saved != null; // null = cancelled
+      if (saved == null) return false; // cancelled
+
+      final total = await zip.length();
+      var lastPct = -1;
+      onPhase?.call('write', 0);
+      await fg.writeStream(
+        saved.path,
+        zip.openRead(),
+        totalBytes: total,
+        onProgress: (p) {
+          // Only report whole-percent changes, not every 64 KB chunk.
+          final pct = total > 0 ? (p.bytesWritten * 100 / total).floor() : 0;
+          if (pct != lastPct) {
+            lastPct = pct;
+            onPhase?.call('write', pct.toDouble());
+          }
+        },
+      );
+      return true;
     } finally {
       if (zip.existsSync()) await zip.delete();
     }

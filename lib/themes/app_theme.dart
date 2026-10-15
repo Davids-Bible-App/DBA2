@@ -4,22 +4,20 @@ import 'package:flutter/material.dart';
 import 'light_mode.dart';
 import 'dark_mode.dart';
 
-class AppTheme {
-  static final ThemeData light = ThemeData(
-    useMaterial3: true,
-    colorScheme: lightScheme,
-    extensions: const <ThemeExtension<dynamic>>[
-      CustomColors.light,
-    ],
-  );
+import 'component_themes.dart';
 
-  static final ThemeData dark = ThemeData(
-    useMaterial3: true,
-    colorScheme: darkScheme,
-    extensions: const <ThemeExtension<dynamic>>[
-      CustomColors.dark,
-    ],
-  );
+class AppTheme {
+  static final ThemeData light = _build(lightScheme, CustomColors.light);
+  static final ThemeData dark = _build(darkScheme, CustomColors.dark);
+
+  static ThemeData _build(ColorScheme scheme, CustomColors custom) =>
+      ComponentThemes.apply(
+        ThemeData(
+          useMaterial3: true,
+          colorScheme: scheme,
+          extensions: <ThemeExtension<dynamic>>[custom],
+        ),
+      );
 }
 
 /// Custom colors outside standard Material ColorScheme (e.g. verse highlights, reader notes)

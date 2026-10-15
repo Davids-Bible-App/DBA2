@@ -46,19 +46,19 @@ const kCatalogUrl = ''; // e.g. 'https://yourdomain.com/audio/catalog.json'
 const kBuiltInCatalog = <AudioPack>[
   AudioPack(
     name: 'Alexander Scourby',
-    url: 'https://example.com/audio/example_author_kjv.zip',
+    url: 'https://github.com/Davids-Bible-App/DBA2/releases/download/DBA2/Scourby.zip',
     description: 'King James Bible, Read By Alexander Scourby, m4a',
     sizeMb: 801,
   ),
   AudioPack(
     name: 'Max McClean',
-    url: 'https://example.com/audio/example_author_kjv.zip',
+    url: 'https://github.com/Davids-Bible-App/DBA2/releases/download/DBA2/McClean.zip',
     description: 'King James Bible, Read By Max Mclean, m4a',
     sizeMb: 863,
   ),
   AudioPack(
     name: 'ESV Audio Bible',
-    url: 'https://example.com/audio/example_author_kjv.zip',
+    url: 'https://github.com/Davids-Bible-App/DBA2/releases/download/DBA2/ESVaudio.zip',
     description: 'English Standard version, Read By Unknown Author, m4a',
     sizeMb: 803,
   ),

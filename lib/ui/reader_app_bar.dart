@@ -8,6 +8,7 @@ import 'package:dba2/state/bar_gesture_settings.dart';
 import 'package:dba2/state/overlay_lock.dart';
 import 'package:dba2/ui/audio_bar.dart';
 import 'package:dba2/ui/book_abbreviations.dart';
+import 'package:dba2/ui/ikon_btn.dart';
 import 'package:dba2/ui/split_reader.dart';
 import 'package:dba2/ui/translation_sheet.dart';
 
@@ -43,69 +44,51 @@ class ReaderAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // TranslationRibbon removed from actions here
     final actions = <Widget>[
-      IconButton(
-        style: IconButton.styleFrom(
-          backgroundColor: context.colorScheme.tertiary,
-          foregroundColor: context.colorScheme.inversePrimary,
-          // Reduce the padding inside the button (default is usually EdgeInsets.all(8.0) or more)
-          padding: const EdgeInsets.all(3.0),
-          // Remove the default 48x48 minimum size restriction so it hugs the icon tightly
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize
-              .shrinkWrap, // Shrinks the touch target bounds
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+      Transform.translate(
+        offset: Offset(0, 1),
+        child: IkonBtn(
+          icon: const Icon(Icons.headset_outlined),
+          tooltip: 'Audio player',
+          onPressed: () {
+            showLockedBottomSheet<void>(
+              backgroundColor: context.colorScheme.secondary,
+              context: context,
+              builder: (_) => AudioBar(),
+            );
+          },
         ),
-        icon: const Icon(Icons.headset_outlined),
-        iconSize: 16,
-        tooltip: 'Audio player',
-        onPressed: () {
-          showLockedBottomSheet<void>(
-            backgroundColor: context.colorScheme.secondary,
-            context: context,
-            builder: (_) => AudioBar(),
-          );
-        },
       ),
       SizedBox(
         width: 10,
       ),
-      IconButton(
-        style: IconButton.styleFrom(
-          backgroundColor: context.colorScheme.tertiary,
-          foregroundColor: context.colorScheme.inversePrimary,
-          // Reduce the padding inside the button (default is usually EdgeInsets.all(8.0) or more)
-          padding: const EdgeInsets.all(3.0),
-          // Remove the default 48x48 minimum size restriction so it hugs the icon tightly
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize
-              .shrinkWrap, // Shrinks the touch target bounds
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+      Transform.translate(
+        offset: Offset(0, 1),
+        child: IkonBtn(
+          icon: Icon(
+            context.select<SplitController, bool>((s) => s.enabled)
+                ? Icons.view_agenda
+                : Icons.view_agenda_outlined,
           ),
+          tooltip: 'Split view',
+          onPressed: () => toggleSplit(context),
         ),
-        icon: Icon(
-          context.select<SplitController, bool>((s) => s.enabled)
-              ? Icons.view_agenda
-              : Icons.view_agenda_outlined,
-        ),
-        iconSize: 16,
-        tooltip: 'Split view',
-        onPressed: () => toggleSplit(context),
       ),
-      IconButton(
-        icon: RotatedBox(
-          quarterTurns: 4,
-          child: Icon(
-            Icons.blur_linear,
-            size: 18,
-            color: context.colorScheme.onSurface,
+      Transform.translate(
+        offset: Offset(0, 2),
+        child: IconButton(
+          icon: RotatedBox(
+            quarterTurns: 4,
+            child: Icon(
+              Icons.blur_linear,
+              size: 25,
+              color: Colors.grey[500],
+              // color: context.colorScheme.onSurface,
+            ),
+            // child: Icon(Icons.video_label_rounded, size: 18),
           ),
-          // child: Icon(Icons.video_label_rounded, size: 18),
+          tooltip: 'Right sidebar (Ctrl+Shift+B)',
+          onPressed: () => SidebarReveal.of(context).toggleRight(),
         ),
-        tooltip: 'Right sidebar (Ctrl+Shift+B)',
-        onPressed: () => SidebarReveal.of(context).toggleRight(),
       ),
     ];
     final t = title; // local copy so Dart can promote String? to String
@@ -159,33 +142,29 @@ class ReaderAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: const RotatedBox(
-                quarterTurns: 2,
-                child: Icon(Icons.blur_linear, size: 18),
-                // child: Icon(Icons.video_label_rounded, size: 18),
-              ),
-              tooltip: 'Left sidebar',
-              onPressed: () => SidebarReveal.of(context).toggleLeft(),
-            ),
-            IconButton(
-              style: IconButton.styleFrom(
-                backgroundColor: context.colorScheme.tertiary,
-                foregroundColor: context.colorScheme.inversePrimary,
-                // Reduce the padding inside the button (default is usually EdgeInsets.all(8.0) or more)
-                padding: const EdgeInsets.all(3.0),
-                // Remove the default 48x48 minimum size restriction so it hugs the icon tightly
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize
-                    .shrinkWrap, // Shrinks the touch target bounds
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            Transform.translate(
+              offset: Offset(0, 2),
+              child: IconButton(
+                icon: RotatedBox(
+                  quarterTurns: 2,
+                  child: Icon(
+                    Icons.blur_linear,
+                    size: 25,
+                    color: Colors.grey[500],
+                  ),
+                  // child: Icon(Icons.video_label_rounded, size: 18),
                 ),
+                tooltip: 'Left sidebar',
+                onPressed: () => SidebarReveal.of(context).toggleLeft(),
               ),
-              icon: Icon(Icons.search),
-              iconSize: 16,
-              tooltip: 'Search',
-              onPressed: () {},
+            ),
+            Transform.translate(
+              offset: Offset(0, 1),
+              child: IkonBtn(
+                icon: Icon(Icons.search),
+                tooltip: 'Search',
+                onPressed: () {},
+              ),
             ),
             Transform.translate(
               offset: Offset(14, -13),
@@ -242,9 +221,11 @@ class _AppBarTitle extends StatelessWidget {
         }
 
         final shown = fits(text) ? text : abbreviateTitle(text);
-        return FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(shown, maxLines: 1, softWrap: false),
+        return Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(shown, maxLines: 1, softWrap: false),
+          ),
         );
       },
     );
