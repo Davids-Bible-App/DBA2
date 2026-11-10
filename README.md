@@ -19,7 +19,7 @@ An Android Bible study app built natively in Flutter (not a ported web view).
 
 ### Highlights
 
-- Box, Text, & Sidelights highlights as an alternative highlight style.
+- Box, Text, & Sidelights as an alternative highlight style.
 
 ![](/images/96014e501a93347fcb5b0d26bf4ee3319b3140c9.png)
 
@@ -94,7 +94,7 @@ An Android Bible study app built natively in Flutter (not a ported web view).
 - Opt-in: disabled by default.
 - Default Prompt, that can be customized to keep topic focus.
 
-![](/images/b00a140939e1560f4ded6740bc9fdcce2790d03e.png)
+![](/images/0b23ae69575c41e81216ecd0342659f3bfab98a6.png)
 
 ### Translations
 
@@ -127,10 +127,6 @@ An Android Bible study app built natively in Flutter (not a ported web view).
 - About page with license and Git URL
 
 ###### Work In Progress.
-
-
-
-
 
 ### In App Downloads:
 
