@@ -1,4 +1,3 @@
-// lib/themes/component_themes.dart
 import 'package:flutter/material.dart';
 
 /// One place for app-wide component styling. Call [apply] from AppTheme.
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 /// (and update live when the theme changes).
 abstract final class ComponentThemes {
   static ThemeData apply(ThemeData base) {
+    // final dark = base.colorScheme.brightness == Brightness.dark;
     final cs = base.colorScheme;
     return base.copyWith(
       filledButtonTheme: FilledButtonThemeData(style: _shapeAndSize()),
@@ -95,23 +95,34 @@ abstract final class ComponentThemes {
   // Picked so it reads in your grey palette:
   //   on : primary track, onPrimary thumb, onSurface icon
   //   off: dark/light inset track with an outline, outline-coloured thumb
-  static SwitchThemeData _switch(ColorScheme cs) => SwitchThemeData(
-    trackColor: WidgetStateProperty.resolveWith(
-      (s) =>
-          s.contains(WidgetState.selected) ? cs.primary : cs.surfaceContainer,
-    ),
-    trackOutlineColor: WidgetStateProperty.resolveWith(
-      (s) => s.contains(WidgetState.selected) ? Colors.transparent : cs.outline,
-    ),
-    thumbColor: WidgetStateProperty.resolveWith(
-      (s) => s.contains(WidgetState.selected) ? cs.onPrimary : cs.outline,
-    ),
-    thumbIcon: WidgetStateProperty.resolveWith((s) {
-      final on = s.contains(WidgetState.selected);
-      return Icon(
-        on ? Icons.check : Icons.close,
-        color: on ? cs.onSurface : cs.surfaceContainer,
-      );
-    }),
-  );
+  static SwitchThemeData _switch(ColorScheme cs) {
+    final isDark = cs.brightness == Brightness.dark;
+
+    return SwitchThemeData(
+      trackColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected)
+            ? (isDark ? Colors.grey[900] : Colors.white)
+            : (isDark ? const Color(0xFF2a2a2a) : Colors.white54),
+      ),
+      trackOutlineColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected)
+            ? (isDark ? Colors.white30 : Colors.grey.shade400)
+            : (isDark ? Colors.white24 : Colors.grey.shade400),
+      ),
+      thumbColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected)
+            ? (isDark ? Colors.white24 : Colors.black26)
+            : (isDark ? Colors.grey[700] : Colors.black26),
+      ),
+      thumbIcon: WidgetStateProperty.resolveWith((s) {
+        final on = s.contains(WidgetState.selected);
+        return Icon(
+          on ? Icons.check : Icons.close,
+          color: on
+              ? (isDark ? Colors.white70 : Colors.white)
+              : (isDark ? Colors.white38 : Colors.white70),
+        );
+      }),
+    );
+  }
 }

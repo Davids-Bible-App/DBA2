@@ -74,6 +74,8 @@ android {
             )
         }
     }
+
+    packaging { jniLibs { useLegacyPackaging = true } }
 }
 
 tasks.matching { it.name == "assembleRelease" || it.name == "bundleRelease" }
@@ -92,26 +94,46 @@ tasks.register("verifyReleaseSigning") {
 }
 
 val copyNamedReleaseApk = tasks.register("copyNamedReleaseApk") {
-    val standardApk = layout.buildDirectory.file("outputs/flutter-apk/app-release.apk")
+    val apkOutputDir = layout.buildDirectory.dir("outputs/flutter-apk")
     
-    // Automatically read version and build number from pubspec.yaml via Flutter extension
+    // Read version and build number from Flutter extension
     val versionName = flutter.versionName
     val versionCode = flutter.versionCode
     
-    // Construct your dynamic filename (e.g., dba2-v1.2.0-4.apk)
-    val customFileName = "dba2-v${versionName}-${versionCode}.apk"
-    val namedApk = layout.buildDirectory.file("outputs/flutter-apk/$customFileName")
-    
-    inputs.file(standardApk)
-    outputs.file(namedApk)
+    // Use directory as input so Gradle doesn't crash if a specific file isn't found yet
+    inputs.dir(apkOutputDir)
     
     doLast {
-        val source = standardApk.get().asFile
-        if (!source.isFile) {
-            throw GradleException("Release APK was not found at ${source.absolutePath}")
+        val outputDir = apkOutputDir.get().asFile
+        if (!outputDir.exists()) return@doLast
+        
+        // 1. Handle standard universal build (app-release.apk)
+        val standardApk = File(outputDir, "app-release.apk")
+        if (standardApk.isFile) {
+            val customFileName = "dba2-v${versionName}-${versionCode}.apk"
+            val targetFile = File(outputDir, customFileName)
+            standardApk.copyTo(targetFile, overwrite = true)
+            println("✅ Release APK successfully renamed to: $customFileName")
         }
-        source.copyTo(namedApk.get().asFile, overwrite = true)
-        println("✅ Release APK successfully renamed to: $customFileName")
+        
+        // 2. Handle split-per-abi builds (e.g., app-arm64-v8a-release.apk)
+        val splitApks = outputDir.listFiles { _, name -> 
+            name.startsWith("app-") && name.endsWith("-release.apk") && name != "app-release.apk" 
+        }
+        
+        if (!splitApks.isNullOrEmpty()) {
+            splitApks.forEach { splitFile ->
+                // Extract ABI name (e.g., "app-arm64-v8a-release.apk" -> "arm64-v8a")
+                val abi = splitFile.name
+                    .removePrefix("app-")
+                    .removeSuffix("-release.apk")
+                
+                val customSplitName = "dba2-v${versionName}-${versionCode}-${abi}.apk"
+                val targetFile = File(outputDir, customSplitName)
+                splitFile.copyTo(targetFile, overwrite = true)
+                println("✅ Split APK successfully renamed to: $customSplitName")
+            }
+        }
     }
 }
 

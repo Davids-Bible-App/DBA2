@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.0.0+015
+version: 2.0.1+043
 
 environment:
   sdk: ^3.13.4
@@ -39,19 +39,40 @@ dependencies:
   filegate: ^1.10.0
   provider: ^6.1.5+1
   flutter_inset_shadow: ^2.0.3
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^2.0.0
   flutter_svg: ^2.3.0
-  just_audio: ^0.10.6
-  just_audio_background: ^0.0.1-beta.17
   path_provider: ^2.1.6
   archive: ^4.3.0
   collection: ^1.19.1
-  just_audio_media_kit: ^2.1.0
-  media_kit_libs_windows_audio: any
   animations: ^3.0.0
+  just_audio: ^0.10.6
+  just_audio_background: ^0.0.1-beta.17
+  just_audio_windows_plus: ^0.5.4
+  url_launcher: ^6.3.3
+  flutter_launcher_icons: ^0.14.4
+  wakelock_plus: ^1.8.1
+  markdown: ^7.3.1
+  flutter_markdown_plus: ^1.0.12
+  http: ^1.6.0
+  ffi: ^2.2.0
+  google_fonts: ^9.0.0
+  flutter_colorpicker: ^1.1.0
+  image: ^4.12.0
+
+flutter_launcher_icons:
+#  android: "launcher_icon"
+  android: true
+  image_path: "assets/icon/icon-bw.webp"
+  # Android Adaptive Icon Layers
+  adaptive_icon_foreground: "assets/icon/icon-bt.webp"
+  adaptive_icon_background: "#FFFFFF"
+  
+  # This enables light/dark/themed OS-level color changes on Android 13+
+  adaptive_icon_monochrome: "assets/icon/icon-wt.webp"
+
+  windows:
+    generate: true
+    image_path: "assets/icon/icon-wb.webp"
+    icon_size: 48
 
 dev_dependencies:
   flutter_test:
@@ -77,8 +98,15 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - LICENSE
     - assets/images/
-    # - assets/databases/eng_kjv.db
+    - assets/icon/
+    - assets/llm_catalog.json
+    - assets/docs/
+    - assets/docs/help/
+    - assets/docs/help/images/
+    - assets/docs/info/
+    - assets/docs/info/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

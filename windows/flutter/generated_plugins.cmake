@@ -4,8 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   filegate
-  media_kit_libs_windows_audio
+  just_audio_windows_plus
   screen_retriever_windows
+  url_launcher_windows
   window_manager
 )
 

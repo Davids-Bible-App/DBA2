@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dba2/storage/profile/profile_settings.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const _key = 'theme_mode';
 
-  ThemeProvider(this._prefs)
-    : _themeMode = ThemeMode.values.firstWhere(
-        (m) => m.name == _prefs.getString(_key),
-        orElse: () => ThemeMode.system,
-      );
+  ThemeProvider(this._store) : _themeMode = _read(_store);
 
-  final SharedPreferences _prefs;
+  final ProfileSettings _store;
   ThemeMode _themeMode;
   ThemeMode get themeMode => _themeMode;
+
+  static ThemeMode _read(ProfileSettings s) => ThemeMode.values.firstWhere(
+    (m) => m.name == s.getString(_key),
+    orElse: () => ThemeMode.system,
+  );
+
+  /// Re-reads from the DB (used after an import).
+  void reload() {
+    _themeMode = _read(_store);
+    notifyListeners();
+  }
 
   bool get followsSystem => _themeMode == ThemeMode.system;
 
@@ -33,7 +40,7 @@ class ThemeProvider extends ChangeNotifier {
     _themeMode = mode;
     notifyListeners();
     try {
-      await _prefs.setString(_key, mode.name);
+      await _store.setString(_key, mode.name);
     } catch (e) {
       debugPrint('Failed to save theme: $e');
     }

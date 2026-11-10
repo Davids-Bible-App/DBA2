@@ -1,4 +1,3 @@
-// lib/themes/light_mode.dart
 import 'package:flutter/material.dart';
 
 final ColorScheme lightScheme =
@@ -15,13 +14,13 @@ final ColorScheme lightScheme =
 
       secondary: Colors.grey.shade200,
       onSecondary: Colors.white,
-      secondaryContainer: Colors.grey.shade500,
+      secondaryContainer: Colors.grey.shade100,
       onSecondaryContainer: Colors.grey.shade900,
 
-      tertiary: Colors.black12,
-      onTertiary: Colors.white,
-      tertiaryContainer: const Color(0xFF632D04),
-      onTertiaryContainer: Colors.amber.shade900,
+      tertiary: Colors.white,
+      onTertiary: Colors.black12,
+      tertiaryContainer: Colors.white, //NIU
+      onTertiaryContainer: Colors.white, //NIU
 
       error: Colors.red.shade700,
       onError: Colors.white,
@@ -43,9 +42,9 @@ final ColorScheme lightScheme =
 
       // Borders, overlays, and inverse colors
       outline: Colors.grey.shade700,
-      outlineVariant: Colors.grey.shade300,
+      outlineVariant: Colors.grey.shade100,
       inverseSurface: Colors.grey.shade900,
-      onInverseSurface: Colors.grey.shade100,
+      onInverseSurface: Colors.white,
       surfaceTint: Colors.grey.shade800,
       shadow: Colors.black12,
       scrim: Colors.white70,

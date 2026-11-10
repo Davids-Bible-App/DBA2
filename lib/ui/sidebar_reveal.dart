@@ -1,8 +1,7 @@
-// lib/ui/sidebar_reveal.dart
 import 'package:dba2/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:dba2/state/overlay_lock.dart';
+import 'package:dba2/ui/widgets/overlay_lock.dart';
 
 enum SidebarSide { left, right }
 
@@ -57,6 +56,9 @@ class SidebarRevealState extends State<SidebarReveal>
   double _openWidth = 0;
   int _request = 0; // invalidates stale async sequences
 
+  /// True while a sidebar is open or opening. Used by the Android back button.
+  final ValueNotifier<bool> isOpen = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +68,7 @@ class SidebarRevealState extends State<SidebarReveal>
   @override
   void dispose() {
     _controller.dispose();
+    isOpen.dispose();
     super.dispose();
   }
 
@@ -96,7 +99,8 @@ class SidebarRevealState extends State<SidebarReveal>
   }
 
   Future<void> _open(SidebarSide s) async {
-    if (overlayLocks.value > 0) return;
+    // if (overlayLocks.value > 0) return;
+    if (isSidebarLocked(left: s == SidebarSide.left)) return;
     final request = ++_request;
     if (_side != s && _controller.value > 0.001) {
       // Other sidebar is showing: glide back to center first.
@@ -107,8 +111,19 @@ class SidebarRevealState extends State<SidebarReveal>
     await _animateTo(1);
   }
 
+  void _hideKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    SystemChannels.textInput.invokeMethod(
+      'TextInput.hide',
+    ); // stubborn Android keyboards
+  }
+
   TickerFuture _animateTo(double target) {
     _targetIsOpen = target == 1;
+    isOpen.value = target == 1;
+    if (target == 0 && _controller.value > 0.01) {
+      _hideKeyboard();
+    }
     final remaining = (target - _controller.value).abs();
     if (remaining < 0.001) {
       _controller.value = target;
@@ -125,7 +140,8 @@ class SidebarRevealState extends State<SidebarReveal>
 
   // ---- Shared drag logic ----
   void _onDragStart(SidebarSide s) {
-    if (overlayLocks.value > 0) return;
+    // if (overlayLocks.value > 0) return;
+    if (isSidebarLocked(left: s == SidebarSide.left)) return;
     // Ignore a grab on the far strip while the other sidebar is open.
     if (_controller.value > 0.01 && _side != s) {
       _dragSide = null;
@@ -134,6 +150,7 @@ class SidebarRevealState extends State<SidebarReveal>
     _request++;
     _controller.stop();
     _dragSide = s;
+    _hideKeyboard();
     if (_side != s) setState(() => _side = s);
   }
 
@@ -255,14 +272,16 @@ class SidebarRevealState extends State<SidebarReveal>
                     height: constraints.maxHeight,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            blurRadius: 16,
-                            spreadRadius: 2,
-                            offset: Offset(-4 * dir, 0),
-                          ),
-                        ],
+                        boxShadow: isOpen
+                            ? [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.5),
+                                  blurRadius: 16,
+                                  spreadRadius: 2,
+                                  offset: Offset(-4 * dir, 0),
+                                ),
+                              ]
+                            : const [],
                       ),
                       child: Stack(
                         children: [
@@ -307,10 +326,12 @@ class SidebarRevealState extends State<SidebarReveal>
       top: widget.dragZoneTopInset,
       bottom: widget.dragZoneBottomInset,
       width: width,
-      child: ValueListenableBuilder<int>(
-        valueListenable: overlayLocks,
-        builder: (_, locks, child) =>
-            IgnorePointer(ignoring: locks > 0, child: child),
+      child: ListenableBuilder(
+        listenable: overlayLockChanges,
+        builder: (_, child) => IgnorePointer(
+          ignoring: isSidebarLocked(left: side == SidebarSide.left),
+          child: child,
+        ),
         child: MouseRegion(
           cursor: SystemMouseCursors.basic,
           opaque: false,

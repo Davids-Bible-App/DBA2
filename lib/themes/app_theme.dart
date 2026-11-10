@@ -1,10 +1,11 @@
-// lib/themes/app_theme.dart
 import 'package:flutter/material.dart';
 
 import 'light_mode.dart';
 import 'dark_mode.dart';
 
 import 'component_themes.dart';
+
+import 'package:dba2/components/streak/streak_badge_theme.dart';
 
 class AppTheme {
   static final ThemeData light = _build(lightScheme, CustomColors.light);
@@ -15,9 +16,25 @@ class AppTheme {
         ThemeData(
           useMaterial3: true,
           colorScheme: scheme,
-          extensions: <ThemeExtension<dynamic>>[custom],
+          extensions: <ThemeExtension<dynamic>>[custom, _streak(scheme)],
         ),
       );
+
+  static StreakBadgeTheme _streak(ColorScheme cs) {
+    final dark = cs.brightness == Brightness.dark;
+    return StreakBadgeTheme.fromTheme(ThemeData(colorScheme: cs)).copyWith(
+      popoverBackground: dark ? Colors.grey.shade800 : Colors.white,
+      popoverBorder: cs.outlineVariant,
+      rowBackground: dark ? Colors.grey.shade900 : Colors.grey.shade100,
+      rowHighlightBackground: dark
+          ? Colors.grey.shade700
+          : Colors.grey.shade300,
+      rowHighlightForeground: dark ? Colors.white : Colors.black,
+      buttonBorder: cs.outline,
+      // popoverRadius: 16,
+      // animationDuration: const Duration(milliseconds: 220),
+    );
+  }
 }
 
 /// Custom colors outside standard Material ColorScheme (e.g. verse highlights, reader notes)
@@ -45,7 +62,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   static const dark = CustomColors(
     kVerseNoColor: Color(0xFFECBD3A), // --verseNo (also the cap)
     kFirstLetter: Color(0xFFD4A82A), // --verseNo (also the cap)
-    kJesusColor: Color(0xFFE57373), // --wordsOfJesus
+    kJesusColor: Color(0xFFFF9307), // --wordsOfJesus
     kHebrewColor: Color(0xFF6495ED), // CornflowerBlue
   );
 

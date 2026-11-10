@@ -1,0 +1,36 @@
+{
+  "models": [
+    {
+      "id": "gemma-3-4b-it-q4",
+      "name": "Gemma 3 4B (Q4_K_M) (Q4 Mobile)",
+      "filename": "gemma-3-4b-it-Q4_K_M.gguf",
+      "url": "https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf",
+      "size_bytes": 2490000000,
+      "description": "Mobile Use - Contains popular bible translations.\nRecommended for 8GB Devices"
+    },
+    {
+      "id": "gemmabible-bsb-scripture-q5",
+      "name": "GemmaBible — BSB Scripture (Q5 Desktop)",
+      "filename": "merged.Q5_K_M.gguf",
+      "url": "https://archive.org/download/dba_20260831/llms/merged.Q5_K_M.gguf",
+      "size_bytes": 5760000000,
+      "description": "Gemma-based model focused on Berean Standard Bible scripture recall."
+    },
+    {
+      "id": "bibleai-history-theology-q8",
+      "name": "BibleAI — History & Theology (Q8 Desktop)",
+      "filename": "final_merged.Q8_0.gguf",
+      "url": "https://archive.org/download/dba_20260831/llms/final_merged.Q8_0.gguf ",
+      "size_bytes": 8300000000,
+      "description": "8-bit quantized model tuned on church history and theology sources. \nGood balance of quality and size."
+    },
+    {
+      "id": "bibleai-history-theology-q16",
+      "name": "BibleAI — History & Theology (Q16 Desktop)",
+      "filename": "final_merged.BF16.gguf",
+      "url": "https://archive.org/download/dba_20260831/llms/final_merged.BF16.gguf",
+      "size_bytes": 15100000000,
+      "description": "Full-precision (BF16) version of the History & Theology model. \nHighest quality, largest download."
+    }
+  ]
+}

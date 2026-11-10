@@ -1,5 +1,3 @@
-// lib/core.dart
-
 // Re-export core framework & packages used across UI widgets
 export 'package:flutter/material.dart';
 export 'package:flutter/widgets.dart';

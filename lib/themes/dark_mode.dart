@@ -7,7 +7,7 @@ final ColorScheme darkScheme =
     ).copyWith(
       // Accent roles
       primary: Colors.grey.shade600,
-      onPrimary: Colors.black,
+      onPrimary: Colors.grey.shade900,
       primaryContainer: Colors.grey.shade800,
       onPrimaryContainer: Colors.white,
       inversePrimary: Colors.grey.shade400,
@@ -17,10 +17,10 @@ final ColorScheme darkScheme =
       secondaryContainer: Colors.grey.shade800,
       onSecondaryContainer: Colors.white,
 
-      tertiary: Colors.black26,
+      tertiary: Colors.grey[850],
       onTertiary: Colors.grey.shade900,
-      tertiaryContainer: Colors.amberAccent,
-      onTertiaryContainer: Colors.amber.shade100,
+      tertiaryContainer: Colors.black, //NIU
+      onTertiaryContainer: Colors.black, //NIU
 
       error: Colors.red.shade300,
       onError: Colors.black,
@@ -33,18 +33,18 @@ final ColorScheme darkScheme =
       onSurfaceVariant: Colors.grey.shade500,
 
       surfaceDim: const Color(0xFF3c3c3c),
-      surfaceBright: Colors.grey.shade500,
+      surfaceBright: Colors.grey.shade600,
       surfaceContainerLowest: const Color(0xAA000000),
       surfaceContainerLow: Colors.grey.shade500,
       surfaceContainer: Colors.grey.shade900,
-      surfaceContainerHigh: Colors.grey.shade700,
+      surfaceContainerHigh: Colors.grey.shade800,
       surfaceContainerHighest: Colors.grey.shade500,
 
       // Borders, overlays, and inverse colors
       outline: Colors.grey.shade500,
       outlineVariant: Colors.grey.shade700,
       inverseSurface: Colors.grey.shade100,
-      onInverseSurface: Colors.grey.shade900,
+      onInverseSurface: Colors.grey.shade700,
       surfaceTint: Colors.grey.shade900,
       shadow: Colors.black,
       scrim: Colors.black,
