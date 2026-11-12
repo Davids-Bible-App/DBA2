@@ -4,8 +4,10 @@ An Android Bible study app built natively in Flutter (not a ported web view).
 Not on Android PlayStore Yet!
 
 Windows Version now available on Microsoft Store.
-[Store deep link](ms-windows-store://pdp/?productid=9NK5B1B0FRVS)
-[Web Store URL](https://apps.microsoft.com/detail/9NK5B1B0FRVS)
+
+Store deep link: ms-windows-store://pdp/?productid=9NK5B1B0FRVS
+
+[Microsoft Web Store URL](https://apps.microsoft.com/detail/9NK5B1B0FRVS)
 
 
 ## Features
